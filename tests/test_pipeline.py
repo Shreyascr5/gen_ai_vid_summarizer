@@ -3,6 +3,10 @@ from rag.chunking import chunk_text
 from rag.embeddings import create_embeddings
 from rag.vector_store import create_index
 
+from rag.vector_store import create_index
+from rag.retrieval import search_chunks
+from rag.embeddings import get_embedding_model
+
 url = input("Enter YouTube URL: ")
 
 data = get_transcript(url)
@@ -33,5 +37,24 @@ print(
 
 print(f"Index Dimension: {index.d}")
 
+print("\n[STEP 5] Retrieval Test")
+
+query = input(
+    "\nAsk a question about the video: "
+)
+
+model = get_embedding_model()
+
+results = search_chunks(
+    query=query,
+    model=model,
+    index=index,
+    chunks=chunks,
+    top_k=3
+)
+
+for i, chunk in enumerate(results, start=1):
+    print(f"\nMatch #{i}")
+    print(chunk[:300])
 
 print("\nPipeline Success!")
